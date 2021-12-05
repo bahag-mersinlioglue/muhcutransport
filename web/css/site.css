@@ -1,3 +1,11 @@
+nav.bg-dark {
+    background-color: #19A7B4 !important;
+}
+
+.form-control {
+    height: calc(2.5em + 0.75rem + 2px);
+}
+
 main > .container {
     padding: 70px 15px 20px;
 }
