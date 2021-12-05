@@ -1,4 +1,5 @@
 <?php
+//use kartik\date\DatePicker;
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
@@ -11,6 +12,24 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
+    ],
+    'modules' => [
+        'datecontrol' =>  [
+            'class' => '\kartik\datecontrol\Module',
+//            // format settings for displaying each date attribute (ICU format example)
+//            'dateControlDisplay' => [
+//                Module::FORMAT_DATE => 'dd.mm.yyyy',
+//                Module::FORMAT_TIME => 'hh:mm',
+//                Module::FORMAT_DATETIME => 'dd.mm.yyyy hh:mm',
+//            ],
+//
+//            // format settings for saving each date attribute (PHP format example)
+//            'dateControlSave' => [
+//                Module::FORMAT_DATE => 'php:Y-m-d', // saves as unix timestamp
+//                Module::FORMAT_TIME => 'php:H:i:s',
+//                Module::FORMAT_DATETIME => 'php:Y-m-d H:i:s',
+//            ]
+        ]
     ],
     'components' => [
         'request' => [

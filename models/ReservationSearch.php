@@ -11,6 +11,8 @@ use app\models\Reservation;
  */
 class ReservationSearch extends Reservation
 {
+    public $license_plate;
+
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,7 @@ class ReservationSearch extends Reservation
     {
         return [
             [['id', 'vehicle_id'], 'integer'],
-            [['from', 'until'], 'safe'],
+            [['from', 'until', 'location', 'license_plate'], 'safe'],
         ];
     }
 
@@ -48,6 +50,11 @@ class ReservationSearch extends Reservation
             'query' => $query,
         ]);
 
+        $dataProvider->sort->attributes['license_plate'] = [
+            'asc' => ['vehicle.license_plate' => SORT_ASC],
+            'desc' => ['vehicle.license_plate' => SORT_DESC],
+        ];
+
         $this->load($params);
 
         if (!$this->validate()) {
@@ -56,12 +63,15 @@ class ReservationSearch extends Reservation
             return $dataProvider;
         }
 
+        $query->joinWith(['vehicle']);
+
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
             'from' => $this->from,
             'until' => $this->until,
-            'vehicle_id' => $this->vehicle_id,
+            'location' => $this->location,
+            'vehicle.license_plate' => $this->license_plate,
         ]);
 
         return $dataProvider;

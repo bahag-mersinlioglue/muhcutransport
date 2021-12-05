@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property string $from
  * @property string $until
+ * @property string $location
  * @property int $vehicle_id
  *
  * @property Vehicle $vehicle
@@ -31,10 +32,28 @@ class Reservation extends \yii\db\ActiveRecord
     {
         return [
             [['from', 'until', 'vehicle_id'], 'required'],
-            [['from', 'until'], 'safe'],
+            [['from', 'until', 'location'], 'safe'],
+            [['from', 'until',], 'date', 'format' => 'php:Y-m-d H:i'],
+            ['from', 'compare', 'compareAttribute' => 'until', 'operator' => '<', 'enableClientValidation' => true],
+            ['start_date', 'validateDates'],
+
             [['vehicle_id'], 'integer'],
             [['vehicle_id'], 'exist', 'skipOnError' => true, 'targetClass' => Vehicle::className(), 'targetAttribute' => ['vehicle_id' => 'id']],
         ];
+    }
+
+    public function validateDates()
+    {
+        Reservation::find()
+            ->joinWith("vehicle")
+            ->where(['vehicle_id' => $this->vehicle_id])
+            ->andWhere(['between', 'from', $this->from, $this->until])
+            ->andWhere(['between', 'until', $this->from, $this->until])
+            ->count();
+        if (strtotime($this->end_date) <= strtotime($this->start_date)) {
+            $this->addError('from', 'Please give correct Start and End dates');
+            $this->addError('until', 'Please give correct Start and End dates');
+        }
     }
 
     /**
@@ -44,9 +63,10 @@ class Reservation extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'from' => 'From',
-            'until' => 'Until',
-            'vehicle_id' => 'Vehicle ID',
+            'from' => 'Von',
+            'until' => 'Bis',
+            'location' => 'Ort',
+            'vehicle_id' => 'Fahrzeug',
         ];
     }
 

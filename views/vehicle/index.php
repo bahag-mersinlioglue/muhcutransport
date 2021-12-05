@@ -27,8 +27,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'license_plate',
-//            'employee_first_name',
-//            'employee_last_name',
             [
                 'attribute' => 'employee_first_name',
                 'value' => function ($model) {

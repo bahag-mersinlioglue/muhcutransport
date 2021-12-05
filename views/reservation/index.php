@@ -26,10 +26,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
             'from',
             'until',
-            'vehicle_id',
+            'location',
+            [
+                'attribute' => 'license_plate',
+                'label' => "Kennzeichen",
+                'value' => function ($model) {
+                    return $model->vehicle ? $model->vehicle->license_plate : '';
+                }
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

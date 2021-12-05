@@ -43,8 +43,8 @@ class Vehicle extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'license_plate' => 'License Plate',
-            'employee_id' => 'Employee ID',
+            'license_plate' => 'Kennzeichen',
+            'employee_id' => 'Mitarbeiter',
         ];
     }
 
