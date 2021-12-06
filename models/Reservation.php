@@ -35,25 +35,44 @@ class Reservation extends \yii\db\ActiveRecord
             [['from', 'until', 'location'], 'safe'],
             [['from', 'until',], 'date', 'format' => 'php:Y-m-d H:i'],
             ['from', 'compare', 'compareAttribute' => 'until', 'operator' => '<', 'enableClientValidation' => true],
-            ['start_date', 'validateDates'],
+            ['from', 'validateFromDate'],
+            ['until', 'validateUntilDate'],
 
             [['vehicle_id'], 'integer'],
             [['vehicle_id'], 'exist', 'skipOnError' => true, 'targetClass' => Vehicle::className(), 'targetAttribute' => ['vehicle_id' => 'id']],
         ];
     }
 
-    public function validateDates()
+    public function validateFromDate()
     {
-        Reservation::find()
+        $q1 = self::find()
             ->joinWith("vehicle")
             ->where(['vehicle_id' => $this->vehicle_id])
             ->andWhere(['between', 'from', $this->from, $this->until])
-            ->andWhere(['between', 'until', $this->from, $this->until])
-            ->count();
-        if (strtotime($this->end_date) <= strtotime($this->start_date)) {
-            $this->addError('from', 'Please give correct Start and End dates');
-            $this->addError('until', 'Please give correct Start and End dates');
+        ;
+        if ($q1->count()) {
+            /** @var Reservation $reservation */
+            foreach ($q1->all() as $reservation) {
+                $this->addError('from', $this->formatDateValidationMessage($reservation->from, $reservation->until));
+            }
         }
+    }
+
+    public function validateUntilDate() {
+        $q2 = self::find()
+            ->joinWith("vehicle")
+            ->where(['vehicle_id' => $this->vehicle_id])
+            ->andWhere(['between', 'until', $this->from, $this->until]);
+        if ($q2->count()) {
+            /** @var Reservation $reservation */
+            foreach ($q2->all() as $reservation) {
+                $this->addError('until', $this->formatDateValidationMessage($reservation->from, $reservation->until));
+            }
+        }
+    }
+
+    private function formatDateValidationMessage($d1, $d2) {
+        return 'Reserviert: vom <b>' .Yii::$app->formatter->asDatetime($d1) . '</b> bis <b>' . Yii::$app->formatter->asDatetime($d2) . '</b>';
     }
 
     /**

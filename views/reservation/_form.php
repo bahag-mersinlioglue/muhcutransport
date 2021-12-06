@@ -14,10 +14,17 @@ use yii\widgets\ActiveForm;
 
 <div class="reservation-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'fieldConfig' => [
+            'errorOptions' => [
+                'encode' => false,
+                'class' => 'help-block'
+            ],
+        ],
+    ]); ?>
 
     <?= $form->field($model, 'from')->widget(DateTimePicker::class, [
-        'options' => ['placeholder' => 'Startdatum auswählen'],
+        'options' => ['placeholder' => 'Startdatum auswählen',],
         'pluginOptions' => [
             'autoclose' => true
         ]

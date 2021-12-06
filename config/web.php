@@ -32,6 +32,13 @@ $config = [
         ]
     ],
     'components' => [
+        'formatter' => [
+            'dateFormat' => 'dd.mm.yyyy',
+            'datetimeFormat' => 'php:d.m.Y H:i',
+            'decimalSeparator' => ',',
+            'thousandSeparator' => '.',
+            'currencyCode' => 'EUR',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'enableCookieValidation' => true,
