@@ -65,7 +65,7 @@ class VehicleSearch extends Vehicle
         }
 
         // grid filtering conditions
-        $query->joinWith('employee');
+        $query->joinWith(['employee', 'vehicleType']);
         $query->andFilterWhere([
             'id' => $this->id,
 //            'employee_id' => $this->employee_id,

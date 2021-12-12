@@ -8,9 +8,12 @@ use Yii;
  * This is the model class for table "reservation".
  *
  * @property int $id
+ * @property string $request_date
+ * @property string $start_time
  * @property string $from
  * @property string $until
  * @property string $location
+ * @property int $thermo
  * @property int $vehicle_id
  *
  * @property Vehicle $vehicle
@@ -31,14 +34,12 @@ class Reservation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['from', 'until', 'vehicle_id'], 'required'],
-            [['from', 'until', 'location'], 'safe'],
-            [['from', 'until',], 'date', 'format' => 'php:Y-m-d H:i'],
-            ['from', 'compare', 'compareAttribute' => 'until', 'operator' => '<', 'enableClientValidation' => true],
-            ['from', 'validateFromDate'],
-            ['until', 'validateUntilDate'],
+            [['request_date', 'vehicle_id'], 'required'],
+            [['request_date', 'start_time', 'location'], 'safe'],
+            [['request_date'], 'date', 'format' => 'php:Y-m-d'],
+            [['start_time'], 'date', 'format' => 'php:H:i'],
 
-            [['vehicle_id'], 'integer'],
+            [['vehicle_id', 'thermo'], 'integer'],
             [['vehicle_id'], 'exist', 'skipOnError' => true, 'targetClass' => Vehicle::className(), 'targetAttribute' => ['vehicle_id' => 'id']],
         ];
     }
@@ -82,9 +83,10 @@ class Reservation extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'from' => 'Von',
-            'until' => 'Bis',
+            'request_date' => 'Datum',
+            'start_time' => 'Startzeit',
             'location' => 'Ort',
+            'thermo' => 'Thermo',
             'vehicle_id' => 'Fahrzeug',
         ];
     }

@@ -2,8 +2,12 @@
 
 namespace app\controllers;
 
+use app\models\Reservation;
+use app\models\Vehicle;
+use app\models\VehicleType;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -61,7 +65,32 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $year = date('Y');
+        $week = date('W');
+        $firstWeekDay = (new \DateTime())->setISODate($year, $week);
+        $lastWeekDay = (new \DateTime())->setISODate($year, $week, 7);
+
+        $interval = \DateInterval::createFromDateString('1 day');
+        $period = new \DatePeriod($firstWeekDay, $interval, $lastWeekDay);
+
+        $reservations = [];
+        foreach ($period as $dt) {
+            /** @var Vehicle $vehicle */
+            foreach (Vehicle::find()->all() as $vehicle) {
+                $reservation = Reservation::find()
+                    ->where(['vehicle_id' => $vehicle->id, 'request_date' => $dt->format('Y-m-d')])->one();
+                if (!$reservation) {
+                    $reservation = new Reservation();
+                    $reservation->request_date = $dt->format('Y-m-d');
+                }
+                $reservations[$vehicle->vehicleType->id][$vehicle->id][$dt->format('Y-m-d')] = $reservation;
+            }
+        }
+
+        return $this->render('index', [
+            'reservations' => $reservations,
+            'period' => $period,
+        ]);
     }
 
     /**

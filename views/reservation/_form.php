@@ -2,6 +2,8 @@
 
 use app\models\Vehicle;
 use kartik\date\DatePicker;
+use kartik\datecontrol\DateControl;
+use kartik\time\TimePicker;
 use kartik\widgets\DateTimePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -23,20 +25,22 @@ use yii\widgets\ActiveForm;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'from')->widget(DateTimePicker::class, [
-        'options' => ['placeholder' => 'Startdatum auswählen',],
-        'pluginOptions' => [
-            'autoclose' => true
-        ]
+    <?= $form->field($model, 'request_date')->widget(DateControl::class, [
+        'type' => DateControl::FORMAT_DATE,
+        'options' => ['placeholder' => 'Tag auswählen',],
+//        'pluginOptions' => [
+//            'autoclose' => true
+//        ]
     ]) ?>
 
-    <?= $form->field($model, 'until')->widget(DateTimePicker::class, [
+    <?= $form->field($model, 'start_time')->widget(DateControl::class, [
+        'type' => DateControl::FORMAT_TIME,
         'options' => [
-            'placeholder' => 'Enddatum auswählen'
+            'placeholder' => 'Startzeit auswählen'
         ],
-        'pluginOptions' => [
-            'autoclose' => true,
-        ]
+//        'pluginOptions' => [
+//            'autoclose' => true,
+//        ]
     ]) ?>
 
     <?= $form->field($model, 'location')->textInput() ?>

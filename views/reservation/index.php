@@ -26,8 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'from',
-            'until',
+            'request_date',
+            'start_time',
             'location',
             [
                 'attribute' => 'license_plate',

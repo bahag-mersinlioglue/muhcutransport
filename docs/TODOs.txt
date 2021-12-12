@@ -1,0 +1,15 @@
+KW Ansicht
+LKW Typ
+    + Kunde
+	+ Adresse
+	+ Thermo (ja/nein)
+	+ Fahrer (Optional)
+
+
+
+Hängerzug (ohne Thermo)
+   Solo -> Beyaz
+   Hänger -> Sari
+   
+Digerlerin hepsi
+Thermo ja/nein ja->sari

@@ -10,8 +10,10 @@ use Yii;
  * @property int $id
  * @property string $license_plate
  * @property int|null $employee_id
+ * @property int|null $vehicle_type_id
  *
  * @property Employee $employee
+ * @property VehicleType $vehicleType
  */
 class Vehicle extends \yii\db\ActiveRecord
 {
@@ -32,7 +34,8 @@ class Vehicle extends \yii\db\ActiveRecord
             [['license_plate'], 'required'],
             [['employee_id'], 'integer'],
             [['license_plate'], 'string', 'max' => 50],
-            [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::className(), 'targetAttribute' => ['employee_id' => 'id']],
+            [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['employee_id' => 'id']],
+            [['vehicle_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VehicleType::class, 'targetAttribute' => ['vehicle_type_id' => 'id']],
         ];
     }
 
@@ -45,6 +48,7 @@ class Vehicle extends \yii\db\ActiveRecord
             'id' => 'ID',
             'license_plate' => 'Kennzeichen',
             'employee_id' => 'Mitarbeiter',
+            'vehicle_type_id' => 'Fahrzeug-Typ',
         ];
     }
 
@@ -55,6 +59,16 @@ class Vehicle extends \yii\db\ActiveRecord
      */
     public function getEmployee()
     {
-        return $this->hasOne(Employee::className(), ['id' => 'employee_id']);
+        return $this->hasOne(Employee::class, ['id' => 'employee_id']);
+    }
+
+    /**
+     * Gets query for [[VehicleType]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVehicleType()
+    {
+        return $this->hasOne(VehicleType::class, ['id' => 'vehicle_type_id']);
     }
 }

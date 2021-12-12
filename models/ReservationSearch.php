@@ -20,7 +20,7 @@ class ReservationSearch extends Reservation
     {
         return [
             [['id', 'vehicle_id'], 'integer'],
-            [['from', 'until', 'location', 'license_plate'], 'safe'],
+            [['request_date', 'start_time', 'location', 'license_plate'], 'safe'],
         ];
     }
 
@@ -68,8 +68,8 @@ class ReservationSearch extends Reservation
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'from' => $this->from,
-            'until' => $this->until,
+            'request_date' => $this->request_date,
+            'start_time' => $this->start_time,
             'location' => $this->location,
             'vehicle.license_plate' => $this->license_plate,
         ]);
