@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Customer;
 use app\models\Employee;
 use app\models\Reservation;
 use app\models\Vehicle;
@@ -83,6 +84,10 @@ class SiteController extends Controller
                     $reservation = new Reservation();
                     $reservation->request_date = $dt->format('Y-m-d');
                     $reservation->vehicle_id = $vehicle->id;
+                } else {
+                    if ($reservation->customer) {
+                        $reservation->customer_name = $reservation->customer->company_name;
+                    }
                 }
                 $reservations[$vehicle->vehicleType->id][$vehicle->id][$dt->format('Y-m-d')] = $reservation;
             }
@@ -98,12 +103,11 @@ class SiteController extends Controller
         $model = new Reservation();
         $request = \Yii::$app->getRequest();
 
-//        die('id: '. print_r(Yii::$app->request->post('Reservation'),1));
-        $id = Yii::$app->request->post('Reservation')['id'];
-        $requestDate = Yii::$app->request->post('Reservation')['request_date'];
-        $vehicleId = Yii::$app->request->post('Reservation')['vehicle_id'];
-//        echo "id: $id";
-        print_r(Yii::$app->request->post('Reservation'));
+        $data = Yii::$app->request->post('Reservation');
+        $requestDate = $data['request_date'];
+        $vehicleId = $data['vehicle_id'];
+        $customerName = $data['customer_name'];
+
         if ($found = Reservation::findOne([
             'request_date' => $requestDate,
             'vehicle_id' => $vehicleId,
@@ -113,6 +117,17 @@ class SiteController extends Controller
 
         \Yii::$app->response->format = Response::FORMAT_JSON;
         if ($model->load($request->post())) {
+            if (strlen($customerName)) {
+                $customer = Customer::findOne(['company_name' => $customerName]);
+                if (!$customer) {
+                    $customer = new Customer();
+                    $customer->company_name = $customerName;
+                    $customer->save();
+                }
+                $model->customer_id = $customer->id;
+            }
+            print_r($model->attributes);
+            print_r($customer->attributes);
             return ['success' => $model->save()];
         } else {
             return ['error' => $model->getErrors()];

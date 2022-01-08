@@ -130,8 +130,8 @@ $this->registerJs("
                             <?= $form->field($reservation, 'id')->hiddenInput()->label(false) ?>
                             <?= $form->field($reservation, 'request_date')->hiddenInput()->label(false) ?>
 
-                            <?= $form->field($reservation, 'customer')->widget(TypeaheadBasic::class, [
-                                'data' => ArrayHelper::map(Customer::find()->all(), 'company_name', 'company_name'),
+                            <?= $form->field($reservation, 'customer_name')->widget(TypeaheadBasic::class, [
+                                'data' => ArrayHelper::map(Customer::find()->all(), 'id', 'company_name'),
                                 'options' => ['placeholder' => 'Kunde', 'id' => rand(0,500)],
                                 'pluginOptions' => ['highlight' => true],
                             ])->label(false) ?>

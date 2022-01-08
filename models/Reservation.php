@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "reservation".
  *
  * @property int $id
- * @property string $customer
+ * @property string $customer_name
  * @property string $request_date
  * @property string $start_time
  * @property string $from
@@ -37,7 +37,7 @@ class Reservation extends \yii\db\ActiveRecord
     {
         return [
             [['request_date', 'vehicle_id'], 'required'],
-            [['request_date', 'start_time', 'location', 'customer'], 'safe'],
+            [['request_date', 'start_time', 'location', 'customer_name'], 'safe'],
             [['request_date'], 'date', 'format' => 'php:Y-m-d'],
             [['start_time'], 'date', 'format' => 'php:H:i'],
 
@@ -54,7 +54,7 @@ class Reservation extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'customer' => 'Kunde',
+            'customer_name' => 'Kunde',
             'customer_id' => 'Kunde-ID',
             'request_date' => 'Datum',
             'start_time' => 'Startzeit',
