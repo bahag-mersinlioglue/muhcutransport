@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Employee;
 use app\models\Reservation;
 use app\models\Vehicle;
 use app\models\VehicleType;
@@ -77,11 +78,11 @@ class SiteController extends Controller
         foreach ($period as $dt) {
             /** @var Vehicle $vehicle */
             foreach (Vehicle::find()->all() as $vehicle) {
-                $reservation = Reservation::find()
-                    ->where(['vehicle_id' => $vehicle->id, 'request_date' => $dt->format('Y-m-d')])->one();
+                $reservation = Reservation::findOne(['vehicle_id' => $vehicle->id, 'request_date' => $dt->format('Y-m-d')]);
                 if (!$reservation) {
                     $reservation = new Reservation();
                     $reservation->request_date = $dt->format('Y-m-d');
+                    $reservation->vehicle_id = $vehicle->id;
                 }
                 $reservations[$vehicle->vehicleType->id][$vehicle->id][$dt->format('Y-m-d')] = $reservation;
             }
@@ -91,6 +92,31 @@ class SiteController extends Controller
             'reservations' => $reservations,
             'period' => $period,
         ]);
+    }
+
+    public function actionSave() {
+        $model = new Reservation();
+        $request = \Yii::$app->getRequest();
+
+//        die('id: '. print_r(Yii::$app->request->post('Reservation'),1));
+        $id = Yii::$app->request->post('Reservation')['id'];
+        $requestDate = Yii::$app->request->post('Reservation')['request_date'];
+        $vehicleId = Yii::$app->request->post('Reservation')['vehicle_id'];
+//        echo "id: $id";
+        print_r(Yii::$app->request->post('Reservation'));
+        if ($found = Reservation::findOne([
+            'request_date' => $requestDate,
+            'vehicle_id' => $vehicleId,
+        ])) {
+            $model = $found;
+        }
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($model->load($request->post())) {
+            return ['success' => $model->save()];
+        } else {
+            return ['error' => $model->getErrors()];
+        }
     }
 
     /**

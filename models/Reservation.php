@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "reservation".
  *
  * @property int $id
+ * @property string $customer
  * @property string $request_date
  * @property string $start_time
  * @property string $from
@@ -15,6 +16,7 @@ use Yii;
  * @property string $location
  * @property int $thermo
  * @property int $vehicle_id
+ * @property int $customer_id
  *
  * @property Vehicle $vehicle
  */
@@ -35,45 +37,14 @@ class Reservation extends \yii\db\ActiveRecord
     {
         return [
             [['request_date', 'vehicle_id'], 'required'],
-            [['request_date', 'start_time', 'location'], 'safe'],
+            [['request_date', 'start_time', 'location', 'customer'], 'safe'],
             [['request_date'], 'date', 'format' => 'php:Y-m-d'],
             [['start_time'], 'date', 'format' => 'php:H:i'],
 
-            [['vehicle_id', 'thermo'], 'integer'],
-            [['vehicle_id'], 'exist', 'skipOnError' => true, 'targetClass' => Vehicle::className(), 'targetAttribute' => ['vehicle_id' => 'id']],
+            [['vehicle_id', 'thermo', 'customer_id'], 'integer'],
+            [['vehicle_id'], 'exist', 'skipOnError' => true, 'targetClass' => Vehicle::class, 'targetAttribute' => ['vehicle_id' => 'id']],
+            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::class, 'targetAttribute' => ['customer_id' => 'id']],
         ];
-    }
-
-    public function validateFromDate()
-    {
-        $q1 = self::find()
-            ->joinWith("vehicle")
-            ->where(['vehicle_id' => $this->vehicle_id])
-            ->andWhere(['between', 'from', $this->from, $this->until])
-        ;
-        if ($q1->count()) {
-            /** @var Reservation $reservation */
-            foreach ($q1->all() as $reservation) {
-                $this->addError('from', $this->formatDateValidationMessage($reservation->from, $reservation->until));
-            }
-        }
-    }
-
-    public function validateUntilDate() {
-        $q2 = self::find()
-            ->joinWith("vehicle")
-            ->where(['vehicle_id' => $this->vehicle_id])
-            ->andWhere(['between', 'until', $this->from, $this->until]);
-        if ($q2->count()) {
-            /** @var Reservation $reservation */
-            foreach ($q2->all() as $reservation) {
-                $this->addError('until', $this->formatDateValidationMessage($reservation->from, $reservation->until));
-            }
-        }
-    }
-
-    private function formatDateValidationMessage($d1, $d2) {
-        return 'Reserviert: vom <b>' .Yii::$app->formatter->asDatetime($d1) . '</b> bis <b>' . Yii::$app->formatter->asDatetime($d2) . '</b>';
     }
 
     /**
@@ -83,6 +54,8 @@ class Reservation extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'customer' => 'Kunde',
+            'customer_id' => 'Kunde-ID',
             'request_date' => 'Datum',
             'start_time' => 'Startzeit',
             'location' => 'Ort',
@@ -99,5 +72,15 @@ class Reservation extends \yii\db\ActiveRecord
     public function getVehicle()
     {
         return $this->hasOne(Vehicle::className(), ['id' => 'vehicle_id']);
+    }
+
+    /**
+     * Gets query for [[Customer]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
