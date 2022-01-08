@@ -67,8 +67,15 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $year = date('Y');
-        $week = date('W');
+        $date = new \DateTime();
+        $selectedDate = intval(Yii::$app->getRequest()->getQueryParam('date'));
+        if (!empty($selectedDate)) {
+            $date = new \DateTime('@' . $selectedDate);
+        }
+
+        $year = $date->format('Y');
+        $week = $date->format('W');
+
         $firstWeekDay = (new \DateTime())->setISODate($year, $week);
         $lastWeekDay = (new \DateTime())->setISODate($year, $week, 7);
 
@@ -96,6 +103,7 @@ class SiteController extends Controller
         return $this->render('index', [
             'reservations' => $reservations,
             'period' => $period,
+            'week' => $week,
         ]);
     }
 

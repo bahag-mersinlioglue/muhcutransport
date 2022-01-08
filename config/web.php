@@ -10,6 +10,7 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language' => 'de',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
@@ -88,7 +89,7 @@ $config = [
 //    ],
     'components' => [
         'formatter' => [
-            'dateFormat' => 'dd.mm.yyyy',
+            'dateFormat' => 'dd.MM.yyyy',
             'datetimeFormat' => 'php:d.m.Y H:i',
             'decimalSeparator' => ',',
             'thousandSeparator' => '.',

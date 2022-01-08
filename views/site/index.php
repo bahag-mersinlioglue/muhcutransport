@@ -5,15 +5,18 @@
 use app\models\Customer;
 use app\models\Vehicle;
 use app\models\VehicleType;
+use kartik\date\DatePicker;
 use kartik\datecontrol\DateControl;
 use kartik\typeahead\TypeaheadBasic;
+use kartik\widgets\DateTimePicker;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = 'My Yii Application';
+$this->title = 'Wochenplan';
 ?>
 <style>
     .calendar-week-bg {
@@ -90,7 +93,33 @@ $this->registerJs("
 ?>
 <div class="site-index">
 
-    <h2>Aktueller Wochenplan</h2>
+    <h2>
+        <span style="display: inline-block;">
+            <?php
+            echo DatePicker::widget([
+                'name' => 'dp_5',
+                'type' => DatePicker::TYPE_BUTTON,
+                'value' => $period->getStartDate()->format('Y-m-d'),
+                'options' => [
+                    'style' => 'float: left;'
+                ],
+                'pluginOptions' => [
+                    'format' => 'yyyy-mm-dd',
+                    'autoclose' => true,
+                ],
+                'pluginEvents' => [
+                    "changeDate" => "function(e) {  
+                        console.log(e);
+                        
+                        location.href = 'index.php?r=site/index&date=' + (e.date.getTime() / 1000); 
+                    }",
+                ]
+            ]);
+            ?>
+        </span>
+        <?= Yii::$app->formatter->asDate($period->getStartDate()) ?>
+        bis <?= Yii::$app->formatter->asDate($period->getEndDate()) ?>
+    </h2>
 
     <table class="table table-sm table-bordered">
 
@@ -120,7 +149,7 @@ $this->registerJs("
                         <?= $vehicle->license_plate ?>
                     </td>
                     <?php foreach ($reservationGroup as $date => $reservation): ?>
-                        <td class="<?= $reservation->thermo ? 'thermo' : ''?>">
+                        <td class="<?= $reservation->thermo ? 'thermo' : '' ?>">
                             <?php $form = ActiveForm::begin([
                                 'action' => ['site/save'],
                                 'enableClientValidation' => true,
@@ -132,7 +161,7 @@ $this->registerJs("
 
                             <?= $form->field($reservation, 'customer_name')->widget(TypeaheadBasic::class, [
                                 'data' => ArrayHelper::map(Customer::find()->all(), 'id', 'company_name'),
-                                'options' => ['placeholder' => 'Kunde', 'id' => rand(0,500)],
+                                'options' => ['placeholder' => 'Kunde', 'id' => rand(0, 500)],
                                 'pluginOptions' => ['highlight' => true],
                             ])->label(false) ?>
 
@@ -151,7 +180,7 @@ $this->registerJs("
                                 ],
                             ])->label(false) ?>
                             <?php
-//                            var_dump($reservation->start_time);
+                            //                            var_dump($reservation->start_time);
                             ?>
 
                             <?php
