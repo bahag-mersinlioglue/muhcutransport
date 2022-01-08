@@ -2,19 +2,20 @@
 
 namespace app\controllers;
 
-use app\models\Customer;
-use app\models\Employee;
-use app\models\Reservation;
-use app\models\Vehicle;
-use app\models\VehicleType;
-use Yii;
-use yii\filters\AccessControl;
-use yii\helpers\ArrayHelper;
-use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
+    use app\models\Customer;
+    use app\models\Employee;
+    use app\models\Reservation;
+    use app\models\Vehicle;
+    use app\models\VehicleType;
+    use Yii;
+    use yii\filters\AccessControl;
+    use yii\helpers\ArrayHelper;
+    use yii\helpers\Url;
+    use yii\web\Controller;
+    use yii\web\Response;
+    use yii\filters\VerbFilter;
+    use app\models\LoginForm;
+    use app\models\ContactForm;
 
 class SiteController extends Controller
 {
@@ -60,86 +61,8 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-    public function actionIndex()
-    {
-        $date = new \DateTime();
-        $selectedDate = intval(Yii::$app->getRequest()->getQueryParam('date'));
-        if (!empty($selectedDate)) {
-            $date = new \DateTime('@' . $selectedDate);
-        }
-
-        $year = $date->format('Y');
-        $week = $date->format('W');
-
-        $firstWeekDay = (new \DateTime())->setISODate($year, $week);
-        $lastWeekDay = (new \DateTime())->setISODate($year, $week, 7);
-
-        $interval = \DateInterval::createFromDateString('1 day');
-        $period = new \DatePeriod($firstWeekDay, $interval, $lastWeekDay);
-
-        $reservations = [];
-        foreach ($period as $dt) {
-            /** @var Vehicle $vehicle */
-            foreach (Vehicle::find()->all() as $vehicle) {
-                $reservation = Reservation::findOne(['vehicle_id' => $vehicle->id, 'request_date' => $dt->format('Y-m-d')]);
-                if (!$reservation) {
-                    $reservation = new Reservation();
-                    $reservation->request_date = $dt->format('Y-m-d');
-                    $reservation->vehicle_id = $vehicle->id;
-                } else {
-                    if ($reservation->customer) {
-                        $reservation->customer_name = $reservation->customer->company_name;
-                    }
-                }
-                $reservations[$vehicle->vehicleType->id][$vehicle->id][$dt->format('Y-m-d')] = $reservation;
-            }
-        }
-
-        return $this->render('index', [
-            'reservations' => $reservations,
-            'period' => $period,
-            'week' => $week,
-        ]);
-    }
-
-    public function actionSave() {
-        $model = new Reservation();
-        $request = \Yii::$app->getRequest();
-
-        $data = Yii::$app->request->post('Reservation');
-        $requestDate = $data['request_date'];
-        $vehicleId = $data['vehicle_id'];
-        $customerName = $data['customer_name'];
-
-        if ($found = Reservation::findOne([
-            'request_date' => $requestDate,
-            'vehicle_id' => $vehicleId,
-        ])) {
-            $model = $found;
-        }
-
-        \Yii::$app->response->format = Response::FORMAT_JSON;
-        if ($model->load($request->post())) {
-            if (strlen($customerName)) {
-                $customer = Customer::findOne(['company_name' => $customerName]);
-                if (!$customer) {
-                    $customer = new Customer();
-                    $customer->company_name = $customerName;
-                    $customer->save();
-                }
-                $model->customer_id = $customer->id;
-            }
-            print_r($model->attributes);
-            print_r($customer->attributes);
-            return ['success' => $model->save()];
-        } else {
-            return ['error' => $model->getErrors()];
-        }
+    public function actionIndex() {
+        $this->redirect(Url::to(['reservation/overview']));
     }
 
     /**

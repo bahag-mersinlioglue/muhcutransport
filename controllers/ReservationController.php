@@ -2,11 +2,15 @@
 
 namespace app\controllers;
 
+use app\models\Customer;
 use app\models\Reservation;
 use app\models\ReservationSearch;
+use app\models\Vehicle;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * ReservationController implements the CRUD actions for Reservation model.
@@ -113,6 +117,100 @@ class ReservationController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionOverview()
+    {
+        $date = new \DateTime();
+        $selectedDate = intval(Yii::$app->getRequest()->getQueryParam('date'));
+        if (!empty($selectedDate)) {
+            $date = new \DateTime('@' . $selectedDate);
+        }
+
+        $year = $date->format('Y');
+        $week = $date->format('W');
+
+        $firstWeekDay = (new \DateTime())->setISODate($year, $week);
+        $lastWeekDay = (new \DateTime())->setISODate($year, $week, 7);
+
+        $interval = \DateInterval::createFromDateString('1 day');
+        $period = new \DatePeriod($firstWeekDay, $interval, $lastWeekDay);
+
+        $reservations = [];
+        foreach ($period as $dt) {
+            /** @var Vehicle $vehicle */
+            foreach (Vehicle::find()->all() as $vehicle) {
+                $reservation = Reservation::findOne(['vehicle_id' => $vehicle->id, 'request_date' => $dt->format('Y-m-d')]);
+                if (!$reservation) {
+                    $reservation = new Reservation();
+                    $reservation->request_date = $dt->format('Y-m-d');
+                    $reservation->vehicle_id = $vehicle->id;
+                } else {
+                    if ($reservation->customer) {
+                        $reservation->customer_name = $reservation->customer->company_name;
+                    }
+                }
+                $reservations[$vehicle->vehicleType->id][$vehicle->id][$dt->format('Y-m-d')] = $reservation;
+            }
+        }
+
+        return $this->render('overview', [
+            'reservations' => $reservations,
+            'period' => $period,
+            'week' => $week,
+        ]);
+    }
+
+    public function actionSave()
+    {
+        $request = \Yii::$app->getRequest();
+
+        $data = Yii::$app->request->post('Reservation');
+        $requestDate = $data['request_date'];
+        $vehicleId = $data['vehicle_id'];
+        $customerName = $data['customer_name'];
+
+        $model = Reservation::findOne([
+            'request_date' => $requestDate,
+            'vehicle_id' => $vehicleId,
+        ]);
+        if (!$model) {
+            $model = new Reservation();
+        }
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($model->load($request->post())) {
+            if (strlen($customerName)) {
+                $customer = Customer::findOne(['company_name' => $customerName]);
+                if (!$customer) {
+                    $customer = new Customer();
+                    $customer->company_name = $customerName;
+                    $customer->save();
+                }
+                $model->customer_id = $customer->id;
+            } else {
+                $model->customer_id = null;
+            }
+            return ['success' => $model->save()];
+        } else {
+            return ['error' => $model->getErrors()];
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function actionDaySummary($date)
+    {
+        $reservations = Reservation::findAll(['request_date' => $date]);
+        return $this->renderPartial('day-summary', [
+            'reservations' => $reservations,
+        ]);
     }
 
     /**
