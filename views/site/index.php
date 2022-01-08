@@ -117,8 +117,10 @@ $this->registerJs("
             ]);
             ?>
         </span>
-        <?= Yii::$app->formatter->asDate($period->getStartDate()) ?>
-        bis <?= Yii::$app->formatter->asDate($period->getEndDate()) ?>
+        <small>
+            <?= Yii::$app->formatter->asDate($period->getStartDate()) ?>
+            bis <?= Yii::$app->formatter->asDate($period->getEndDate()) ?>
+        </small>
     </h2>
 
     <table class="table table-sm table-bordered">
