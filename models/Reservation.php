@@ -105,4 +105,22 @@ class Reservation extends \yii\db\ActiveRecord
         }
         return $driver ? $driver->getFullName() : 'Kein Fahrer';
     }
+
+    public function getTileOverviewClass() {
+//        Rot -> Fest verplant
+//        Gelb -> Kundenname existiert && Adresse fehlt (Reserviert)
+//        Grün -> Kundenname & Adresse fehlen
+
+        $class = 'green';
+//        if (empty($this->customer_id) && empty($this->location)) {
+//            $class = 'green';
+//        }
+        if ($this->customer_id && empty($this->location)) {
+            $class = 'yellow';
+        }
+        if ($this->customer_id && $this->location) {
+            $class = 'red';
+        }
+        return $class;
+    }
 }

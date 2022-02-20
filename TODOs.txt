@@ -1,11 +1,11 @@
-Optionaler Fahrer
++ Optionaler Fahrer
 Validierung von Fahrer
 Mobile Ansicht
 
-Klick auf Logo -> Kachelansicht
-Klick auf Reservierungen -> Detailansicht / Wochenplan
++Klick auf Logo -> Kachelansicht
++Klick auf Reservierungen -> Detailansicht / Wochenplan
 
-Kachelansicht mit farbigen Boxen
++Kachelansicht mit farbigen Boxen
 Rot -> Fest verplant
 Gelb -> Kundenname existiert && Adresse fehlt (Reserviert)
 Grün -> Kundenname & Adresse fehlen

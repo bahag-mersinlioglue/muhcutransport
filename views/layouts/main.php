@@ -45,7 +45,7 @@ AppAsset::register($this);
 //            ['label' => 'Contact', 'url' => ['/site/contact']],
             ['label' => 'Mitarbeiter', 'url' => ['/employee/index']],
             ['label' => 'Fahrzeuge', 'url' => ['/vehicle/index']],
-            ['label' => 'Reservierungen', 'url' => ['/reservation/index']],
+            ['label' => 'Reservierungen', 'url' => ['/reservation/overview']],
 //            Yii::$app->user->isGuest ? (
 //                ['label' => 'Login', 'url' => ['/site/login']]
 //            ) : (

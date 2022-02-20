@@ -62,7 +62,7 @@ class SiteController extends Controller
     }
 
     public function actionIndex() {
-        $this->redirect(Url::to(['reservation/overview']));
+        $this->redirect(Url::to(['reservation/overview-tile']));
     }
 
     /**

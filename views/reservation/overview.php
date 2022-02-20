@@ -155,7 +155,7 @@ $this->registerJs("
             </th>
             <?php foreach ($period as $dt): ?>
                 <th>
-                    <?= $dt->format('Y-m-d') ?>
+                    <?= $dt->format('d.m.Y') ?>
                     <i class="fa fa-copy copy-summary" data-date="<?= $dt->format('Y-m-d') ?>"></i>
                 </th>
             <?php endforeach; ?>

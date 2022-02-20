@@ -166,6 +166,53 @@ class ReservationController extends Controller
         ]);
     }
 
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionOverviewTile()
+    {
+        $date = new \DateTime();
+        $selectedDate = intval(Yii::$app->getRequest()->getQueryParam('date'));
+        if (!empty($selectedDate)) {
+            $date = new \DateTime('@' . $selectedDate);
+        }
+
+        $year = $date->format('Y');
+        $week = $date->format('W');
+
+        $firstWeekDay = (new \DateTime())->setISODate($year, $week);
+        $lastWeekDay = (new \DateTime())->setISODate($year, $week, 7);
+
+        $interval = \DateInterval::createFromDateString('1 day');
+        $period = new \DatePeriod($firstWeekDay, $interval, $lastWeekDay);
+
+        $reservations = [];
+        foreach ($period as $dt) {
+            /** @var Vehicle $vehicle */
+            foreach (Vehicle::find()->all() as $vehicle) {
+                $reservation = Reservation::findOne(['vehicle_id' => $vehicle->id, 'request_date' => $dt->format('Y-m-d')]);
+                if (!$reservation) {
+                    $reservation = new Reservation();
+                    $reservation->request_date = $dt->format('Y-m-d');
+                    $reservation->vehicle_id = $vehicle->id;
+                } else {
+                    if ($reservation->customer) {
+                        $reservation->customer_name = $reservation->customer->company_name;
+                    }
+                }
+                $reservations[$vehicle->vehicleType->id][$vehicle->id][$dt->format('Y-m-d')] = $reservation;
+            }
+        }
+
+        return $this->render('overview-tile', [
+            'reservations' => $reservations,
+            'period' => $period,
+            'week' => $week,
+        ]);
+    }
+
     public function actionSave()
     {
         $request = \Yii::$app->getRequest();
