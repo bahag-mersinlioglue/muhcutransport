@@ -71,4 +71,8 @@ class Vehicle extends \yii\db\ActiveRecord
     {
         return $this->hasOne(VehicleType::class, ['id' => 'vehicle_type_id']);
     }
+
+    public function getDriverName() {
+        return $this->employee ? $this->employee->getFullName() : '-';
+    }
 }

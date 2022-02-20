@@ -17,8 +17,10 @@ use Yii;
  * @property int $thermo
  * @property int $vehicle_id
  * @property int $customer_id
+ * @property int $driver_id
  *
  * @property Vehicle $vehicle
+ * @property Employee $driver
  */
 class Reservation extends \yii\db\ActiveRecord
 {
@@ -41,9 +43,10 @@ class Reservation extends \yii\db\ActiveRecord
             [['request_date'], 'date', 'format' => 'php:Y-m-d'],
             [['start_time'], 'date', 'format' => 'php:H:i'],
 
-            [['vehicle_id', 'thermo', 'customer_id'], 'integer'],
+            [['vehicle_id', 'thermo', 'customer_id', 'driver_id'], 'integer'],
             [['vehicle_id'], 'exist', 'skipOnError' => true, 'targetClass' => Vehicle::class, 'targetAttribute' => ['vehicle_id' => 'id']],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::class, 'targetAttribute' => ['customer_id' => 'id']],
+            [['driver_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['driver_id' => 'id']],
         ];
     }
 
@@ -82,5 +85,24 @@ class Reservation extends \yii\db\ActiveRecord
     public function getCustomer()
     {
         return $this->hasOne(Customer::class, ['id' => 'customer_id']);
+    }
+
+    /**
+     * Gets query for [[Driver]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDriver()
+    {
+        return $this->hasOne(Employee::class, ['id' => 'driver_id']);
+    }
+
+    public function getDriverName() {
+        if ($this->driver_id) {
+            $driver = $this->driver;
+        } else {
+            $driver = $this->vehicle->employee;
+        }
+        return $driver ? $driver->getFullName() : 'Kein Fahrer';
     }
 }

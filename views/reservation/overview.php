@@ -3,6 +3,7 @@
 /* @var $this yii\web\View */
 
 use app\models\Customer;
+use app\models\Employee;
 use app\models\Vehicle;
 use app\models\VehicleType;
 use kartik\date\DatePicker;
@@ -158,14 +159,16 @@ $this->registerJs("
                     <i class="fa fa-copy copy-summary" data-date="<?= $dt->format('Y-m-d') ?>"></i>
                 </th>
             <?php endforeach; ?>
-
+            <th>
+                Standard-Fahrer
+            </th>
         </tr>
         </thead>
 
         <?php foreach ($reservations as $vehicleTypeId => $vehicleTypeGroup): ?>
             <?php $vehicleType = VehicleType::findOne($vehicleTypeId); ?>
             <tr class="vehicle-type-bg">
-                <td colspan="7">
+                <td colspan="8">
                     <?= $vehicleType->name ?>
                 </td>
             </tr>
@@ -221,6 +224,14 @@ $this->registerJs("
 
                             <?= $form->field($reservation, 'thermo')->checkbox(['placeholder' => 'Thermo', 'class' => 'thermo-control'])->label(false) ?>
 
+                            <?= $form->field($reservation, 'driver_id')
+                                ->dropDownList(
+                                    ArrayHelper::map(Employee::find()->all(),'id','fullName'),
+                                    ['placeholder' => 'Fahrer', 'prompt' => 'Fahrer']
+                                )
+                                ->label(false)
+                            ?>
+
                             <div class="form-group hidden" style="display: none;">
                                 <?php echo Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
                             </div>
@@ -228,6 +239,9 @@ $this->registerJs("
                             <?php ActiveForm::end(); ?>
                         </td>
                     <?php endforeach; ?>
+                    <td>
+                        <?= $vehicle->getDriverName() ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         <?php endforeach; ?>
