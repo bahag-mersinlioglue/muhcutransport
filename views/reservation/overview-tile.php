@@ -94,7 +94,7 @@ $this->registerJs("
                 ],
                 'pluginEvents' => [
                     "changeDate" => "function(e) {  
-                        location.href = 'index.php?r=reservation/overview&date=' + (e.date.getTime() / 1000); 
+                        location.href = 'index.php?r=reservation/overview-tile&date=' + (e.date.getTime() / 1000); 
                     }",
                 ]
             ]);

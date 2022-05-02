@@ -128,6 +128,9 @@ class ReservationController extends Controller
     {
         $date = new \DateTime();
         $selectedDate = intval(Yii::$app->getRequest()->getQueryParam('date'));
+        if ($selectedDate > 0) {
+            $selectedDate += (60*60*24);
+        }
         if (!empty($selectedDate)) {
             $date = new \DateTime('@' . $selectedDate);
         }
@@ -175,6 +178,9 @@ class ReservationController extends Controller
     {
         $date = new \DateTime();
         $selectedDate = intval(Yii::$app->getRequest()->getQueryParam('date'));
+        if ($selectedDate > 0) {
+            $selectedDate += (60*60*24);
+        }
         if (!empty($selectedDate)) {
             $date = new \DateTime('@' . $selectedDate);
         }

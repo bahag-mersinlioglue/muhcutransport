@@ -86,3 +86,13 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+
+input[type="text"]::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #dedede;
+    opacity: 0.8; /* Firefox */
+}
+
+input {
+    color: #000 !important;
+}
