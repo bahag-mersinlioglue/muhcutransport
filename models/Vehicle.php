@@ -11,6 +11,7 @@ use Yii;
  * @property string $license_plate
  * @property int|null $employee_id
  * @property int|null $vehicle_type_id
+ * @property \DateTime|null $deleted
  *
  * @property Employee $employee
  * @property VehicleType $vehicleType
@@ -33,6 +34,7 @@ class Vehicle extends \yii\db\ActiveRecord
         return [
             [['license_plate'], 'required'],
             [['employee_id'], 'integer'],
+            [['deleted'], 'safe'],
             [['license_plate'], 'string', 'max' => 50],
             [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['employee_id' => 'id']],
             [['vehicle_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => VehicleType::class, 'targetAttribute' => ['vehicle_type_id' => 'id']],
@@ -49,6 +51,7 @@ class Vehicle extends \yii\db\ActiveRecord
             'license_plate' => 'Kennzeichen',
             'employee_id' => 'Mitarbeiter',
             'vehicle_type_id' => 'Fahrzeug-Typ',
+            'deleted' => 'Gelöscht'
         ];
     }
 

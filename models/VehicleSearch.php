@@ -2,9 +2,10 @@
 
 namespace app\models;
 
+use app\models\Vehicle;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Vehicle;
+use yii\db\Expression;
 
 /**
  * VehicleSearch represents the model behind the search form of `app\models\Vehicle`.
@@ -75,6 +76,15 @@ class VehicleSearch extends Vehicle
         $query->andFilterWhere(['like', 'employee.first_name', $this->employee_first_name]);
         $query->andFilterWhere(['like', 'employee.last_name', $this->employee_last_name]);
 
+        $query->andFilterWhere(['is', 'vehicle.deleted', new Expression('null')]);
+
         return $dataProvider;
+    }
+
+    public static function findAllNotDeleted() {
+        return Vehicle::find()
+            ->where(['is', 'deleted', new Expression('null')])
+            ->orderBy('license_plate')
+            ->all();
     }
 }

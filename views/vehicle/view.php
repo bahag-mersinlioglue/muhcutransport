@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Vehicle */
 
-$this->title = $model->id;
+$this->title = $model->license_plate;
 $this->params['breadcrumbs'][] = ['label' => 'Vehicles', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -31,7 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'license_plate',
-            'employee_id',
+            'employee.fullName',
+            [
+                'attribute' => 'vehicleType.name',
+                'label' => 'Fahrzeug-Typ',
+            ]
         ],
     ]) ?>
 

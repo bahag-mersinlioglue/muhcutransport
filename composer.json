@@ -22,7 +22,8 @@
         "kartik-v/yii2-widgets": "*",
         "kartik-v/yii2-datecontrol": "dev-master",
         "kartik-v/yii2-widget-datetimepicker": "*",
-        "supplyhog/yii2-clipboardjs" : "dev-master"
+        "supplyhog/yii2-clipboardjs" : "dev-master",
+        "kartik-v/yii2-dialog": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

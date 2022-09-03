@@ -78,7 +78,12 @@ $this->registerJs("
 ?>
 <div class="reservation-overview">
 
-    <h2>
+    <h2 class="text-center">
+
+        <a href="<?= 'index.php?r=reservation/overview-tile&date=' . $period->getStartDate()->modify('-1week')->getTimestamp() ?>">
+            <i class="fa fa-arrow-left"></i>
+        </a>
+
         <span style="display: inline-block;">
             <?php
             echo DatePicker::widget([
@@ -104,6 +109,10 @@ $this->registerJs("
             <?= Yii::$app->formatter->asDate($period->getStartDate()) ?>
             bis <?= Yii::$app->formatter->asDate($period->getEndDate()) ?>
         </small>
+
+        <a href="<?= 'index.php?r=reservation/overview-tile&date=' . $period->getStartDate()->modify('+1week')->getTimestamp() ?>">
+            <i class="fa fa-arrow-right"></i>
+        </a>
     </h2>
 
     <table class="table table-sm table-bordered">

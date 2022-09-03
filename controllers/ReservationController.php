@@ -6,6 +6,7 @@ use app\models\Customer;
 use app\models\Reservation;
 use app\models\ReservationSearch;
 use app\models\Vehicle;
+use app\models\VehicleSearch;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -147,7 +148,7 @@ class ReservationController extends Controller
         $reservations = [];
         foreach ($period as $dt) {
             /** @var Vehicle $vehicle */
-            foreach (Vehicle::find()->all() as $vehicle) {
+            foreach (VehicleSearch::findAllNotDeleted() as $vehicle) {
                 $reservation = Reservation::findOne(['vehicle_id' => $vehicle->id, 'request_date' => $dt->format('Y-m-d')]);
                 if (!$reservation) {
                     $reservation = new Reservation();
@@ -197,7 +198,7 @@ class ReservationController extends Controller
         $reservations = [];
         foreach ($period as $dt) {
             /** @var Vehicle $vehicle */
-            foreach (Vehicle::find()->all() as $vehicle) {
+            foreach (VehicleSearch::findAllNotDeleted() as $vehicle) {
                 $reservation = Reservation::findOne(['vehicle_id' => $vehicle->id, 'request_date' => $dt->format('Y-m-d')]);
                 if (!$reservation) {
                     $reservation = new Reservation();

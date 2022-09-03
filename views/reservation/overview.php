@@ -60,52 +60,9 @@ $this->title = 'Wochenplan';
 <?php
 
 $this->registerJs("
-        window.Clipboard = (function(window, document, navigator) {
-    var textArea,
-        copy;
-
-    function isOS() {
-        return navigator.userAgent.match(/ipad|iphone/i);
-    }
-
-    function createTextArea(text) {
-        textArea = document.createElement('textArea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-    }
-
-    function selectText() {
-        var range,
-            selection;
-
-        if (isOS()) {
-            range = document.createRange();
-            range.selectNodeContents(textArea);
-            selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            textArea.setSelectionRange(0, 999999);
-        } else {
-            textArea.select();
-        }
-    }
-
-    function copyToClipboard() {        
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-    }
-
-    copy = function(text) {
-        createTextArea(text);
-        selectText();
-        copyToClipboard();
-    };
-
-    return {
-        copy: copy
-    };
-})(window, document, navigator);
-
+$('#close-clipboard').click(function(){
+    $('#clipboard-wrapper').hide();
+});
     $('.copy-summary').click(function(data) {
          var elm = $(this);
          elm.removeClass('fa-copy');
@@ -118,12 +75,9 @@ $this->registerJs("
 //                console.log(navigator.userAgent);
 //                navigator.userAgent.match(/ipad|iphone/i);
             
-                $('#clipboard').html(data);
-//                $('.btn.clipboard-js-init').click();
-                // How to use
-//                console.log(data)
-//                console.log($('#clipboard').text())
-                Clipboard.copy($('#clipboard').text());
+                $('#clipboard').val(data);
+                $('#clipboard-wrapper').show();
+                $('.clipboard-js-init').click();
             },
             error: function () {
                 alert('Something went wrong');
@@ -169,9 +123,25 @@ $this->registerJs("
 "
 );
 ?>
+
+<div id="clipboard-wrapper" style="display: none; margin-bottom: 2rem; padding-bottom: 2rem;">
+    <textarea id="clipboard" rows="10" cols="60">
+        Example text
+    </textarea>
+    <?= \supplyhog\ClipboardJs\ClipboardJsWidget::widget([
+        'inputId' => "#clipboard",
+    ]) ?>
+    <button class="btn btn-primary" id="close-clipboard">Schließen</button>
+</div>
+
 <div class="reservation-overview">
 
-    <h2>
+    <h2 class="text-center">
+
+        <a href="<?= 'index.php?r=reservation/overview&date=' . $period->getStartDate()->modify('-1week')->getTimestamp() ?>">
+            <i class="fa fa-arrow-left"></i>
+        </a>
+
         <span style="display: inline-block;">
             <?php
             echo DatePicker::widget([
@@ -197,6 +167,10 @@ $this->registerJs("
             <?= Yii::$app->formatter->asDate($period->getStartDate()) ?>
             bis <?= Yii::$app->formatter->asDate($period->getEndDate()) ?>
         </small>
+
+        <a href="<?= 'index.php?r=reservation/overview&date=' . $period->getStartDate()->modify('+1week')->getTimestamp() ?>">
+            <i class="fa fa-arrow-right"></i>
+        </a>
     </h2>
 
     <table class="table table-sm table-bordered">
@@ -302,11 +276,5 @@ $this->registerJs("
     </table>
 
 
-    <div style="height: 1px; overflow: hidden;">
-        <div id="clipboard"></div>
-        <?= \supplyhog\ClipboardJs\ClipboardJsWidget::widget([
-            'inputId' => "#clipboard",
-        ]) ?>
-    </div>
 
 </div>

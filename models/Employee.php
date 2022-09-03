@@ -11,6 +11,7 @@ use Yii;
  * @property string $first_name
  * @property string $last_name
  * @property string|null $phonenumber
+ * @property \DateTime|null $deleted
  */
 class Employee extends \yii\db\ActiveRecord
 {
@@ -28,6 +29,7 @@ class Employee extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['deleted'], 'safe'],
             [['first_name', 'last_name', 'phonenumber'], 'string', 'max' => 255],
         ];
     }
@@ -42,6 +44,7 @@ class Employee extends \yii\db\ActiveRecord
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'phonenumber' => 'Phonenumber',
+            'deleted' => 'Gelöscht'
         ];
     }
 

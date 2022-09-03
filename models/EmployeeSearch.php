@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Employee;
+use yii\db\Expression;
 
 /**
  * EmployeeSearch represents the model behind the search form of `app\models\Employee`.
@@ -65,6 +66,14 @@ class EmployeeSearch extends Employee
             ->andFilterWhere(['like', 'last_name', $this->last_name])
             ->andFilterWhere(['like', 'phonenumber', $this->phonenumber]);
 
+        $query->andFilterWhere(['is', 'deleted', new Expression('null')]);
+
         return $dataProvider;
+    }
+
+    public static function findAllNotDeleted() {
+        return Employee::find()
+            ->where(['is', 'deleted', new Expression('null')])
+            ->all();
     }
 }

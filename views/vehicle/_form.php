@@ -1,6 +1,7 @@
 <?php
 
 use app\models\EmployeeSearch;
+use app\models\VehicleTypeSearch;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -15,6 +16,11 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'license_plate')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'vehicle_type_id')->dropDownList(
+        ArrayHelper::map(VehicleTypeSearch::find()->all(), 'id', 'name'),
+        [ 'prompt' => 'Fahrzeug-Typ auswählen' ]
+    ) ?>
 
     <?= $form->field($model, 'employee_id')->dropDownList(
         ArrayHelper::map(EmployeeSearch::find()->all(), 'id', 'first_name'),

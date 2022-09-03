@@ -9,3 +9,14 @@ Mobile Ansicht
 Rot -> Fest verplant
 Gelb -> Kundenname existiert && Adresse fehlt (Reserviert)
 Grün -> Kundenname & Adresse fehlen
+
+
+[15:04, 3.9.2022]
+Fahrzeug bearbeiten Typ Auswahl fehlt.
+Mitarbeiter löschen. Listelerde gozukmesin.
+Fahrzeug löschen als gelöscht markieren und aus den Listen für die Auswahl entfernen.
+Listelerde araçları plakaya göre sırala.
+Bir sonraki ve önceki haftalara hızlı geçiş linki
+
+Günlük verileri bir sonraki gün için kopyalama imkanı. Doppel Klick ile sadece.
+Benutzerverwaltung Berechtigungen. Buchhaltung için nur lesend.

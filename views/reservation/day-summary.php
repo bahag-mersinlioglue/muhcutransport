@@ -4,12 +4,12 @@ use app\models\Reservation; ?>
 <?php // echo $reservation->request_date ?>
 <?php foreach ($reservations as $reservation): ?>
 ######
-<?= $reservation->getDriverName() ?><br/>
-<?= $reservation->customer ? $reservation->customer->company_name : '--Firma' ?> <br/>
-<?= $reservation->location ? $reservation->location : '--Ort' ?> <br/>
+<?= $reservation->getDriverName() . PHP_EOL ?>
+<?= $reservation->customer ? $reservation->customer->company_name : '--Firma' ?>
+<?= $reservation->location ? $reservation->location : '--Ort' ?>
 <?php if($reservation->start_time): ?>
-<?= $reservation->start_time ?> Uhr<br/>
+<?= $reservation->start_time ?> Uhr
 <?php endif; ?>
-<?= $reservation->vehicle->license_plate ?> <br/>
-<br/>
+<?= $reservation->vehicle->license_plate ?>
+
 <?php endforeach; ?>
