@@ -4,6 +4,7 @@
 
 use app\models\Customer;
 use app\models\Employee;
+use app\models\EmployeeSearch;
 use app\models\Vehicle;
 use app\models\VehicleType;
 use kartik\date\DatePicker;
@@ -120,6 +121,35 @@ $('#close-clipboard').click(function(){
         $(this).find('.btn').click();
     })
     ;
+    
+    $('.take-over-for-next-day').dblclick(function() {
+//    $('.take-over-for-next-day').click(function() {
+        var currentElm = $(this).closest('td');
+        var nextElm = currentElm.next();
+        
+        var customerSelector = '[name=\"Reservation[customer_name]\"]';
+        nextElm.find(customerSelector).val(currentElm.find(customerSelector).val());
+    
+        var locationSelector = '[name=\"Reservation[location]\"]';
+        nextElm.find(locationSelector).val(currentElm.find(locationSelector).val());
+    
+        var startTimeSelector = '[name=\"Reservation[start_time]\"]';
+        nextElm.find(startTimeSelector).val(currentElm.find(startTimeSelector).val());
+        nextElm.find(startTimeSelector).prev().val(currentElm.find(startTimeSelector).val());
+    
+        var thermoSelector = '[name=\"Reservation[thermo]\"]';
+        nextElm.find(thermoSelector).prop('checked', currentElm.find(thermoSelector).is(':checked'));
+        if (currentElm.find(thermoSelector).is(':checked')) {
+            nextElm.addClass('thermo');
+        } else {
+            nextElm.removeClass('thermo');
+        }
+    
+        var driverSelector = '[name=\"Reservation[driver_id]\"]';
+        nextElm.find(driverSelector).val(currentElm.find(driverSelector).val());
+        
+        nextElm.find('form').submit();
+    });
 "
 );
 ?>
@@ -229,7 +259,10 @@ $('#close-clipboard').click(function(){
                                 'autoWidget' => false,
                                 'widgetClass' => 'yii\widgets\MaskedInput',
                                 'widgetOptions' => [
-                                    'mask' => '99:99'
+                                    'mask' => '99:99',
+                                    'options' => [
+                                        'class' => 'form-control',
+                                    ],
                                 ],
                                 'options' => [
                                     'id' => 'time-' . $reservation->request_date . '-' . $reservation->vehicle_id,
@@ -249,11 +282,18 @@ $('#close-clipboard').click(function(){
 
                             <?= $form->field($reservation, 'vehicle_id')->hiddenInput()->label(false) ?>
 
-                            <?= $form->field($reservation, 'thermo')->checkbox(['placeholder' => 'Thermo', 'class' => 'thermo-control'])->label(false) ?>
+                            <div class="row">
+                                <div class="col">
+                                    <?= $form->field($reservation, 'thermo')->checkbox(['placeholder' => 'Thermo', 'class' => 'thermo-control'])->label(false) ?>
+                                </div>
+                                <div class="col text-center">
+                                    <i class="fa fa-arrow-circle-right take-over-for-next-day"></i>
+                                </div>
+                            </div>
 
                             <?= $form->field($reservation, 'driver_id')
                                 ->dropDownList(
-                                    ArrayHelper::map(Employee::find()->all(),'id','fullName'),
+                                    ArrayHelper::map(EmployeeSearch::findAllNotDeleted(),'id','fullName'),
                                     ['placeholder' => 'Fahrer', 'prompt' => 'Fahrer']
                                 )
                                 ->label(false)
