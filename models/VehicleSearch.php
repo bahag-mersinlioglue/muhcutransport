@@ -81,10 +81,16 @@ class VehicleSearch extends Vehicle
         return $dataProvider;
     }
 
-    public static function findAllNotDeleted() {
+    public static function findAllNotDeleted()
+    {
         return Vehicle::find()
             ->where(['is', 'deleted', new Expression('null')])
-            ->orderBy('license_plate')
+            ->orderBy(
+                [
+                    'vehicle.vehicle_type_id' => SORT_ASC,
+                    'vehicle.license_plate' => SORT_ASC,
+                ]
+            )
             ->all();
     }
 }

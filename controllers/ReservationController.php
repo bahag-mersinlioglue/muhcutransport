@@ -7,6 +7,7 @@ use app\models\Reservation;
 use app\models\ReservationSearch;
 use app\models\Vehicle;
 use app\models\VehicleSearch;
+use app\models\VehicleType;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -262,9 +263,12 @@ class ReservationController extends Controller
     public function actionDaySummary($date)
     {
         $reservations = Reservation::find()
-            ->joinWith(['vehicle'])
+            ->joinWith(['vehicle', 'vehicle.vehicleType'])
             ->where(['request_date' => $date])
-            ->orderBy([Vehicle::tableName() . '.license_plate' => SORT_ASC])
+            ->orderBy([
+                'vehicle.vehicle_type_id' => SORT_ASC,
+                'vehicle.license_plate' => SORT_ASC,
+            ])
             ->all();
 
         $result = '';
