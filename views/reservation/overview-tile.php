@@ -49,7 +49,7 @@ $this->title = 'Wochenplan';
         max-width: 100%;
     }
 
-    .table tbody tr:nth-child(2n+2) {
+    .table tbody tr:not(.vehicle-type-bg):nth-child(2n+2) {
         background-color: #e9ecef !important;
     }
 

@@ -261,10 +261,26 @@ class ReservationController extends Controller
      */
     public function actionDaySummary($date)
     {
-        $reservations = Reservation::findAll(['request_date' => $date]);
-        return $this->renderPartial('day-summary', [
-            'reservations' => $reservations,
-        ]);
+        $reservations = Reservation::find()
+            ->joinWith(['vehicle'])
+            ->where(['request_date' => $date])
+            ->orderBy([Vehicle::tableName() . '.license_plate' => SORT_ASC])
+            ->all();
+
+        $result = '';
+        $lineEnding = PHP_EOL;
+        foreach ($reservations as $reservation) {
+            $result .= "######" . $lineEnding;
+            $result .= $reservation->getDriverName() . $lineEnding;
+            $result .= ($reservation->customer ? $reservation->customer->company_name : '--Firma') . $lineEnding;
+            $result .= ($reservation->location ? $reservation->location : '--Ort') . $lineEnding;
+            if ($reservation->start_time) {
+                $result .= $reservation->start_time . ' Uhr' . $lineEnding;
+            }
+            $result .= $reservation->vehicle->license_plate . $lineEnding . $lineEnding;
+        }
+
+        return $result;
     }
 
     /**
